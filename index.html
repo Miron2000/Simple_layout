@@ -6,10 +6,102 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Simple</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 </head>
 <body>
-    <div>
-
+<div class="page">
+    <header class="header">
+        <div class="header__section">
+            <div class="header__item"><img class="header__logo" src="logo/logo" alt="logo"></p></div>
+            <div class="header__item hover"><a href="#">Example</a></div>
+            <div class="header__item hover"><a href="#">Example</a></div>
+            <div class="header__item"><input class="header__search" type="search" name="q" placeholder="Search"></div>
+        </div>
+        <div class="header__section">
+            <div class="header__item hover"><a href="#">Settings</a></div>
+            <div class="header__item hover"><a href="#">Login</a></div>
+        </div>
+    </header>
+    <!--Гамбургер меню-->
+    <div class="hamburger-menu">
+        <input id="menu__toggle" type="checkbox"/>
+        <label class="menu__btn" for="menu__toggle">
+            <span></span>
+        </label>
+        <ul class="menu__box">
+            <li><a class="menu__item" href="#">Example</a></li>
+            <li><a class="menu__item" href="#">Example</a></li>
+            <li><a class="menu__item" href="#"><input class="header__search" type="search" name="q"
+                                                      placeholder="Search"></a></li>
+            <li><a class="menu__item" href="#">Settings</a></li>
+            <li><a class="menu__item" href="#">Login</a></li>
+        </ul>
     </div>
+    <section class="section-table indentation">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Films</th>
+                <th>Genre</th>
+                <th>Release date</th>
+                <th>Countries</th>
+                <th>Assessment</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>Papillon</td>
+                <td>Drama, crime</td>
+                <td>September 9, 2017</td>
+                <td>USA</td>
+                <td>8.5</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Papillon</td>
+                <td>Drama, crime</td>
+                <td>September 9, 2017</td>
+                <td>USA</td>
+                <td>8.5</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Papillon</td>
+                <td>Drama, crime</td>
+                <td>September 9, 2017</td>
+                <td>USA</td>
+                <td>8.5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Papillon</td>
+                <td>Drama, crime</td>
+                <td>September 9, 2017</td>
+                <td>USA</td>
+                <td>8.5</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Papillon</td>
+                <td>Drama, crime</td>
+                <td>September 9, 2017</td>
+                <td>USA</td>
+                <td>8.5</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <footer class="footer">
+        <div class="footer__section">
+            <div class="footer__item"><a href="#">Facebook <span class="icon"><i class="fa fa-facebook-official" aria-hidden="true"></i></span></a></div>
+            <div class="footer__item"><a href="#">Telegram <span class="icon"><i class="fa fa-telegram" aria-hidden="true"></i></span></a></div>
+            <div class="footer__item"><a href="#">Instagram <span class="icon"><i class="fa fa-instagram" aria-hidden="true"></i></span></a></div>
+            <div class="footer__item"><a href="#">Twitter <span class="icon"><i class="fa fa-twitter" aria-hidden="true"></i></span></a></div>
+        </div>
+    </footer>
+</div>
 </body>
 </html>

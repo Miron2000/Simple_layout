@@ -1,0 +1,292 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: #ffff;
+    text-decoration: none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #86B5C2;
+    width: 100%;
+    height: 5rem;
+}
+
+.header__section {
+    display: flex;
+    align-items: center;
+}
+
+.header__logo {
+    width: 63px;
+    height: 47px;
+    margin-top: 30px;
+}
+
+.header__item {
+    padding: 10px 20px;
+    font-family: "Noto Sans CJK SC";
+    font-size: 21px;
+}
+
+.header__search {
+    font-style: italic;
+    width: 205px;
+    height: 42px;
+    padding-left: 10px;
+    border: 2px solid #7BA7AB;
+    border-radius: 5px;
+    outline: none;
+    background: #F9F0DA;
+    color: #9E9C9C;
+}
+
+.hover:hover {
+    background-color: #A5B5C2;
+    border-radius: 30px;
+}
+
+.section-table {
+    margin: auto;
+    min-width: 1170px;
+    padding: 0 15px;
+}
+
+.indentation {
+    margin-top: 8rem;
+}
+
+.table {
+    width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    /*border-collapse: collapse;*/
+}
+
+.table th, .table td {
+    text-align: center;
+    padding: 10px;
+    font-family: "Noto Sans CJK SC"
+}
+
+.table th {
+    background-color: #B1D4E6;
+    color: black;
+}
+
+.table tr:nth-child(even) {
+    background: aliceblue;
+}
+
+.table tr {
+    transition: all .3s;
+}
+
+.table tr:hover {
+    background-color: #B1D4E6;
+    cursor: pointer;
+}
+
+.hamburger-menu {
+    display: none;
+}
+
+.footer {
+    margin-top: auto;  /*футер вниз*/
+    background-color: #86B5C2;
+    width: 100%;
+    height: 10rem;
+}
+.footer__section {
+    text-align: center;
+}
+.icon {
+    font-size: 1.5rem;
+    color:#B1D4E6;
+}
+.icon:hover {
+    color:#A5B5C2;
+}
+.footer__item {
+    padding-top: 2px;
+    font-family: "Noto Sans CJK SC";
+    font-size: 21px;
+}
+
+
+@media (max-width: 768px) {
+    .header__logo {
+        width: 49px;
+        height: 40px;
+        margin-top: 20px;
+    }
+
+    .header__item {
+        font-size: 16px;
+    }
+
+    .header__search {
+        width: 110px;
+    }
+
+    .table {
+        display: block;
+        width: 100%;
+        white-space: nowrap;
+    }
+
+    .table thead, .table tbody, .table thead th {
+        display: block;
+    }
+
+    .table thead {
+        float: left;
+    }
+
+    .table tbody {
+        overflow-x: auto;
+    }
+
+    .table tbody tr {
+        display: table-cell;
+        background: aliceblue;
+    }
+
+    .table td {
+        display: block;
+        border-bottom: 1px solid #fff;
+    }
+
+    .table th {
+        border-bottom: 1px solid #fff;
+    }
+
+    .table .th:not(:last-child) {
+        border: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .header__section {
+        display: none;
+    }
+
+    .hamburger-menu {
+        display: block;
+    }
+
+    /*Гамбургер меню(взял с гугла)*/
+    /* скрываем чекбокс */
+    #menu__toggle {
+        opacity: 0;
+    }
+
+    /* стилизуем кнопку */
+    .menu__btn {
+        display: flex; /* используем flex для центрирования содержимого */
+        align-items: center; /* центрируем содержимое кнопки */
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 26px;
+        height: 26px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    /* добавляем "гамбургер" */
+    .menu__btn > span,
+    .menu__btn > span::before,
+    .menu__btn > span::after {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: #616161;
+    }
+
+    .menu__btn > span::before {
+        content: '';
+        top: -8px;
+    }
+
+    .menu__btn > span::after {
+        content: '';
+        top: 8px;
+    }
+
+    /* контейнер меню */
+    .menu__box {
+        display: block;
+        position: fixed;
+        visibility: hidden;
+        top: 0;
+        left: -100%;
+        width: 300px;
+        height: 100%;
+        margin: 0;
+        padding: 80px 0;
+        list-style: none;
+        text-align: center;
+        background-color: #86B5C2;
+        box-shadow: 1px 0px 6px rgba(0, 0, 0, .2);
+    }
+
+    /* элементы меню */
+    .menu__item {
+        display: block;
+        padding: 12px 24px;
+        color: #333;
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .menu__item:hover {
+        background-color: #CFD8DC;
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span {
+        transform: rotate(45deg);
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span::before {
+        top: 0;
+        transform: rotate(0);
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span::after {
+        top: 0;
+        transform: rotate(90deg);
+    }
+
+    #menu__toggle:checked ~ .menu__box {
+        visibility: visible;
+        left: 0;
+    }
+
+    .menu__btn > span,
+    .menu__btn > span::before,
+    .menu__btn > span::after {
+        transition-duration: .25s;
+    }
+
+    .menu__box {
+        transition-duration: .25s;
+    }
+
+    .menu__item {
+        transition-duration: .25s;
+    }
+
+}
