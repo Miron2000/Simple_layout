@@ -57,13 +57,15 @@ a {
 }
 
 .section-table {
+    width: 100%;
     margin: auto;
-    min-width: 1170px;
+    max-width: 1170px;
     padding: 0 15px;
 }
 
 .indentation {
     margin-top: 8rem;
+    margin-bottom: 8rem;
 }
 
 .table {
@@ -175,7 +177,10 @@ a {
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
+    .table tbody {
+        overflow-x: auto;
+    }
     .header__section {
         display: none;
     }
