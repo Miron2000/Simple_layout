@@ -120,12 +120,6 @@ for (let item of films) {
             fillFilms(item.assessment);
         }
     })
-    // fillFilms(item.id);
-    // fillFilms(item.films);
-    // fillFilms(item.genre);
-    // fillFilms(item.releaseDate);
-    // fillFilms(item.countries);
-    // fillFilms(item.assessment);
 
     tbody.appendChild(tr);
 }
