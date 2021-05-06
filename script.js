@@ -1,9 +1,8 @@
-// import films from './OOP/classFilms.js';
+import fetchFilms from "./data.js";
 
 const sectionTable = document.querySelector('.section-table');
 const table = document.createElement('table');
 table.classList.add('table');
-
 const thead = document.createElement('thead');
 const tbody = document.createElement('tbody');
 const trHead = document.createElement('tr');
@@ -13,15 +12,16 @@ table.appendChild(thead);
 thead.appendChild(trHead);
 table.appendChild(tbody);
 
-
-class Films {
-    constructor(id, name, genre, assessment) {
-        this._id = id;
-        this._name = name.trim();
-        this._genre = genre.trim();
-        this._assessment = assessment;
+class Film {
+    constructor(id, name, genre, releaseDate, countries, assessment) {
+        this.id = id;
+        this.name = name;
+        this.genre = genre;
+        this.releaseDate = releaseDate;
+        this.countries = countries;
+        this.assessment = assessment;
     }
-//id
+
     set id(id) {
         this._id = id
     }
@@ -29,22 +29,39 @@ class Films {
     get id() {
         return this._id;
     }
-//name
+
     set name(name) {
         this._name = name.trim();
     }
+
     get name() {
         return this._name;
     }
-    //genre
+
     set genre(genre) {
-        this._genre = genre
+        this._genre = genre.trim();
     }
 
     get genre() {
         return this._genre;
     }
-//assessment
+
+    set releaseDate(releaseDate) {
+        this._releaseDate = releaseDate.trim();
+    }
+
+    get releaseDate() {
+        return this._releaseDate;
+    }
+
+    set countries(countries) {
+        this._countries = countries.trim();
+    }
+
+    get countries() {
+        return this._countries;
+    }
+
     set assessment(assessment) {
         this._assessment = assessment
     }
@@ -52,30 +69,86 @@ class Films {
     get assessment() {
         return this._assessment;
     }
-}
+};
 
+class IMDBFilm extends Film {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, genre, releaseDate, countries, assessment);
+        this.imdbFilm = imdbFilm;
+    }
 
-class Film extends Films {
-    constructor(id, name, genre, releaseDate, countries, assessment) {
-        super(id, name, genre, assessment);
-        this.releaseDate = releaseDate.trim();
-        this.countries = countries.trim();
+    set imdbFilm(imdbFilm) {
+        this._imdbFilm = imdbFilm
+    }
+
+    get imdbFilm() {
+        return this._imdbFilm;
     }
 }
 
-// проверка set и get
-// const test = new Films(1, 'Papillon', 'Drama, crime', 'September 9, 2017', 'USA', 8.9);
-// test.name = "Miron";
-// console.log(test.name);
+const GENRE = {comedy: 'comedy', horror: 'horror', drama: 'drama', superhero: 'superhero', fiction: 'fiction'};
 
-const films = [
-    new Film(1, 'Papillon', 'Drama, crime', 'September 9, 2017', 'USA', 8.9),
-    new Film(2, 'The Hangover', 'Comedy', 'May 30, 2009', 'USA', 9.0),
-    new Film(3, 'Babysitting', 'Сomedy', '16 April 2014','France',8.7),
-    new Film(4, 'Venom', 'Drama, crime', 'October 1, 2018','USA',7.8),
-    new Film(5, 'Papillon', 'Drama, crime', 'September 9, 2017','USA',8.9),
-    new Film(6, 'Papillon', 'Drama, crime', 'September 9, 2017','USA',8.9)
-];
+class Horror extends IMDBFilm {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, GENRE.horror, releaseDate, countries, assessment, imdbFilm);
+    }
+}
+
+class Comedy extends IMDBFilm {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, GENRE.comedy, releaseDate, countries, assessment, imdbFilm);
+    }
+}
+
+class Drama extends IMDBFilm {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, GENRE.drama, releaseDate, countries, assessment, imdbFilm);
+    }
+}
+
+class SuperheroMovie extends IMDBFilm {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, GENRE.superhero, releaseDate, countries, assessment, imdbFilm);
+    }
+}
+
+class Fiction extends IMDBFilm {
+    constructor(id, name, genre, releaseDate, countries, assessment, imdbFilm) {
+        super(id, name, GENRE.fiction, releaseDate, countries, assessment, imdbFilm);
+    }
+}
+
+const films = fetchFilms();
+films.forEach(item => {
+
+    function detailsConstructor (constructorName) {
+        new constructorName(item.number, item.films, item.genre, item.releaseDate, item.countries, item.assessment, item.imdbFilm);
+    }
+
+    switch (item.genre) {
+        case GENRE.comedy:
+            detailsConstructor(Comedy);
+            break;
+
+        case GENRE.horror:
+            detailsConstructor(Horror);
+            break;
+
+        case GENRE.drama:
+            detailsConstructor(Drama);
+            break;
+
+        case GENRE.superhero:
+            detailsConstructor(SuperheroMovie);
+            break;
+
+        case GENRE.fiction:
+            detailsConstructor(Fiction);
+            break;
+    }
+
+    detailsConstructor(IMDBFilm);
+})
 
 const column = [
     {acessor: 'number', title: 'Number'},
@@ -83,11 +156,12 @@ const column = [
     {acessor: 'genre', title: 'Genre'},
     {acessor: 'releaseDate', title: 'Release date'},
     {acessor: 'countries', title: 'Countries'},
-    {acessor: 'assessment', title: 'Assessment'}
-];
+    {acessor: 'assessment', title: 'Assessment'},
+    {acessor: 'imdbFilm', title: 'IMDB'}
+]
 
-//для th
-function createTitleTable (trHead) {
+//for th
+function createTableTitles(trHead) {
     column.forEach(item => {
         const th = document.createElement('th');
         th.innerHTML = item.title;
@@ -95,36 +169,47 @@ function createTitleTable (trHead) {
     })
 }
 
-//для td
-function createColumnTable (tbody) {
+//for td
+function createTableRows(tbody) {
 
     for (let item of films) {
         const tr = document.createElement('tr');
 
-        function fillFilms(itemText) {
+        function createTableColumnFilms(itemText) {
             let td = document.createElement('td')
             td.innerHTML = itemText;
             tr.appendChild(td);
         }
 
         column.forEach(i => {
-            if (i.acessor === 'number') {
-                fillFilms(item._id);
-            }
-            if (i.acessor === 'name') {
-                fillFilms(item._name);
-            }
-            if (i.acessor === 'genre') {
-                fillFilms(item._genre);
-            }
-            if (i.acessor === 'releaseDate') {
-                fillFilms(item.releaseDate);
-            }
-            if (i.acessor === 'countries') {
-                fillFilms(item.countries);
-            }
-            if (i.acessor === 'assessment') {
-                fillFilms(item._assessment);
+            switch (i.acessor) {
+                case 'number':
+                    createTableColumnFilms(item.number);
+                    break;
+
+                case 'name':
+                    createTableColumnFilms(item.films);
+                    break;
+
+                case 'genre':
+                    createTableColumnFilms(item.genre);
+                    break;
+
+                case 'releaseDate':
+                    createTableColumnFilms(item.releaseDate);
+                    break;
+
+                case 'countries':
+                    createTableColumnFilms(item.countries);
+                    break;
+
+                case 'assessment':
+                    createTableColumnFilms(item.assessment);
+                    break;
+
+                case 'imdbFilm':
+                    createTableColumnFilms(item.imdbFilm);
+                    break;
             }
         })
 
@@ -132,6 +217,5 @@ function createColumnTable (tbody) {
     }
 };
 
-createTitleTable(trHead);
-createColumnTable(tbody);
-
+createTableTitles(trHead);
+createTableRows(tbody);
