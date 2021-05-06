@@ -1,3 +1,4 @@
+import fetchFilms from './data.js';
 const sectionTable = document.querySelector('.section-table');
 const table = document.createElement('table');
 table.classList.add('table');
@@ -11,57 +12,7 @@ table.appendChild(thead);
 thead.appendChild(trHead);
 table.appendChild(tbody);
 
-
-const films = [
-    {
-        id: 1,
-        name: 'Papillon',
-        genre: 'Drama, crime',
-        releaseDate: 'September 9, 2017',
-        countries: 'USA',
-        assessment: 8.9
-    },
-    {
-        id: 2,
-        name: 'The Hangover',
-        genre: 'Сomedy',
-        releaseDate: 'May 30, 2009 ',
-        countries: 'USA',
-        assessment: 9.0
-    },
-    {
-        id: 3,
-        name: 'Babysitting',
-        genre: 'Сomedy',
-        releaseDate: '16 April 2014',
-        countries: 'France',
-        assessment: 8.7
-    },
-    {
-        id: 4,
-        name: 'Venom',
-        genre: 'Drama, crime',
-        releaseDate: 'October 1, 2018',
-        countries: 'USA',
-        assessment: 7.8
-    },
-    {
-        id: 5,
-        name: 'Papillon',
-        genre: 'Superhero movie, crime',
-        releaseDate: 'September 9, 2017',
-        countries: 'USA',
-        assessment: 8.5
-    },
-    {
-        id: 6,
-        name: 'Papillon',
-        genre: 'Drama, crime',
-        releaseDate: 'September 9, 2017',
-        countries: 'USA',
-        assessment: 8.5
-    },
-];
+const films = fetchFilms();
 
 const column = [
     {acessor: 'number', title: 'Number'},
@@ -70,7 +21,7 @@ const column = [
     {acessor: 'releaseDate', title: 'Release date'},
     {acessor: 'countries', title: 'Countries'},
     {acessor: 'assessment', title: 'Assessment'}
-];
+]
 
 //для th
 function createTitleTable (trHead) {
