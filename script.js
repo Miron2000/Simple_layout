@@ -125,7 +125,7 @@ films.forEach(item => {
         new constructorName(item.number, item.films, item.genre, item.releaseDate, item.countries, item.assessment, item.imdbFilm);
     }
 
-    switch (item.genre) {
+    switch (item.genre.split(', ')[0].toLowerCase()) {
         case GENRE.comedy:
             detailsConstructor(Comedy);
             break;
