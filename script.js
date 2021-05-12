@@ -121,7 +121,7 @@ class Fiction extends IMDBFilm {
 const films = fetchFilms();
 films.forEach(item => {
 
-    function detailsConstructor (constructorName) {
+    function detailsConstructor(constructorName) {
         new constructorName(item.number, item.films, item.genre, item.releaseDate, item.countries, item.assessment, item.imdbFilm);
     }
 
@@ -151,13 +151,13 @@ films.forEach(item => {
 })
 
 const column = [
-    {acessor: 'number', title: 'Number'},
-    {acessor: 'name', title: 'Films'},
-    {acessor: 'genre', title: 'Genre'},
-    {acessor: 'releaseDate', title: 'Release date'},
-    {acessor: 'countries', title: 'Countries'},
-    {acessor: 'assessment', title: 'Assessment'},
-    {acessor: 'imdbFilm', title: 'IMDB'}
+    {acessor: 'number', title: 'Number', data: 'integer'},
+    {acessor: 'name', title: 'Films', data: 'text'},
+    {acessor: 'genre', title: 'Genre', data: 'text'},
+    {acessor: 'releaseDate', title: 'Release date', data: 'date'},
+    {acessor: 'countries', title: 'Countries', data: 'text'},
+    {acessor: 'assessment', title: 'Assessment', data: 'double'},
+    {acessor: 'imdbFilm', title: 'IMDB', data: 'boolean'}
 ]
 
 //for th
@@ -166,6 +166,7 @@ function createTableTitles(trHead) {
         const th = document.createElement('th');
         th.innerHTML = item.title;
         trHead.appendChild(th);
+        th.setAttribute('data-type', `${item.data}`);
     })
 }
 
@@ -219,3 +220,126 @@ function createTableRows(tbody) {
 
 createTableTitles(trHead);
 createTableRows(tbody);
+
+
+//При кліку на th міняє колір
+// let selectedTd;
+// clickTable.onclick = function(event){
+//     let target = event.target;
+//     if (target.tagName !== 'TH') return;
+//     highlight(target);
+// }
+// function highlight(th) {
+//     if (selectedTd) { // убрать существующую подсветку, если есть
+//         selectedTd.classList.remove('highlight');
+//     }
+//     selectedTd = th;
+//     selectedTd.classList.add('highlight'); // подсветить новый td
+//
+//     const newArray = films.sort((a, b) => a - b);
+// console.log(newArray, 'Method Sort')
+// }
+
+///////////////////////////ПРОСТАЯ СОРТИРОВКА..........................................
+let colIndex = -1;
+const sortTable = function(index, type, isSorted) {
+    const tbody = table.querySelector('tbody');
+
+    const compare = function (rowA, rowB) {
+        const rowDataA = rowA.cells[index].innerHTML;
+        const rowDataB = rowB.cells[index].innerHTML;
+
+        switch (type) {
+            case 'integer':
+            case 'double':
+                return rowDataA - rowDataB;
+                break
+
+            case 'date':
+                const dateA = rowDataA.split('.').reverse().join('-');
+                const dateB = rowDataB.split('.').reverse().join('-');
+                return new Date(dateA).getTime() - new Date(dateB).getTime();
+                break
+
+            case 'text':
+                if (rowDataA < rowDataB) return -1;
+                else if (rowDataA > rowDataB) return 1;
+                return 0;
+                break
+        }
+    }
+
+    let rows = [].slice.call(tbody.rows);
+
+    rows.sort(compare);
+    if(isSorted) {
+        rows.reverse();
+    }
+
+    table.removeChild(tbody);
+
+    for (let i = 0; i < rows.length; i++) {
+        tbody.appendChild(rows[i]);
+    }
+    table.appendChild(tbody);
+}
+
+table.addEventListener('click', (e) => {
+    const el = e.target;
+    if(el.nodeName !== 'TH') return;
+
+    const index = el.cellIndex;
+
+    const type = el.getAttribute('data-type');
+    sortTable(index, type, colIndex === index);
+    colIndex = (colIndex === index) ? -1 : index;
+})
+
+
+
+///////////////////////////БЫСТРАЯ СОРТИРОВКА..........................................
+// table.addEventListener('click', (event) => {
+//     let elTarget = event.target;
+//     if (elTarget.tagName !== 'TH') return;
+//     const index = elTarget.cellIndex;//index елемента(th) на который кликнули
+//
+//     const type = elTarget.getAttribute('data-type');
+//
+//     sortTable(films, index, type);
+// })
+//
+// function sortTable(arrFilms, index, type) {
+//     // switch (type) {
+//     //     case 'integer':
+//     //         quickSort(arrFilms, index);
+//     //         break;
+//     // }
+//
+//     const sortArrayQuickSearch = quickSort(arrFilms, index);
+//     let rows = [];
+//     table.removeChild(tbody);
+//
+//     for (let i =0; i < sortArrayQuickSearch.length; i++) {
+//         console.log(rows.push(i), 'test');
+//     }
+//
+//     table.appendChild(tbody);
+// }
+//
+// function quickSort(arrFilms, index) {
+//     if (arrFilms.length < 2) {
+//         return arrFilms;
+//     } else {
+//         const pivot = arrFilms[Math.floor(Math.random() * arrFilms.length)];//рандомный обьект с фильмом
+//         const pivotValues = Object.values(pivot)[0];//number обьекта
+//
+//         const less = arrFilms.filter(value => Object.values(value)[0] < pivotValues);//массив с маленькими числами
+//         const greater = arrFilms.filter(value => Object.values(value)[0] > pivotValues);//массив с большими числами
+//
+//         // console.log(pivotValues, 'pivotValues');
+//         // console.log(less, 'less');
+//         // console.log(greater, 'greater');
+//         let sortArray = [...quickSort(less), pivotValues, ...quickSort(greater)];
+//         return sortArray;
+//     }
+// }
