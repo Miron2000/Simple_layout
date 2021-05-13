@@ -121,7 +121,7 @@ class Fiction extends IMDBFilm {
 const films = fetchFilms();
 films.forEach(item => {
 
-    function detailsConstructor (constructorName) {
+    function detailsConstructor(constructorName) {
         new constructorName(item.number, item.films, item.genre, item.releaseDate, item.countries, item.assessment, item.imdbFilm);
     }
 
@@ -151,13 +151,13 @@ films.forEach(item => {
 })
 
 const column = [
-    {acessor: 'number', title: 'Number'},
-    {acessor: 'name', title: 'Films'},
-    {acessor: 'genre', title: 'Genre'},
-    {acessor: 'releaseDate', title: 'Release date'},
-    {acessor: 'countries', title: 'Countries'},
-    {acessor: 'assessment', title: 'Assessment'},
-    {acessor: 'imdbFilm', title: 'IMDB'}
+    {acessor: 'number', title: 'Number', data: 'integer'},
+    {acessor: 'name', title: 'Films', data: 'text'},
+    {acessor: 'genre', title: 'Genre', data: 'text'},
+    {acessor: 'releaseDate', title: 'Release date', data: 'date'},
+    {acessor: 'countries', title: 'Countries', data: 'text'},
+    {acessor: 'assessment', title: 'Assessment', data: 'double'},
+    {acessor: 'imdbFilm', title: 'IMDB', data: 'boolean'}
 ]
 
 //for th
@@ -166,6 +166,7 @@ function createTableTitles(trHead) {
         const th = document.createElement('th');
         th.innerHTML = item.title;
         trHead.appendChild(th);
+        th.setAttribute('data-type', item.data);
     })
 }
 
@@ -219,3 +220,57 @@ function createTableRows(tbody) {
 
 createTableTitles(trHead);
 createTableRows(tbody);
+
+
+///////////////////////////ПРОСТАЯ СОРТИРОВКА..........................................
+let activeColumnIndex = -1;
+const sortTable = function(tbody, index, type, isSorted) {
+
+    const compare = function (rowA, rowB) {
+        const rowDataA = rowA.cells[index].innerHTML;
+        const rowDataB = rowB.cells[index].innerHTML;
+
+        switch (type) {
+            case 'integer':
+            case 'double':
+                return rowDataA - rowDataB;
+
+            case 'date':
+                const dateA = rowDataA.split('.').reverse().join('-');
+                const dateB = rowDataB.split('.').reverse().join('-');
+                return new Date(dateA).getTime() - new Date(dateB).getTime();
+
+            case 'text':
+                if (rowDataA.toLowerCase() < rowDataB.toLowerCase()) return -1;
+                else if (rowDataA.toLowerCase() > rowDataB.toLowerCase()) return 1;
+                return 0;
+        }
+    }
+
+    let rows = [].slice.call(tbody.rows);
+
+    rows.sort(compare);
+    if(isSorted) {
+        rows.reverse();
+    }
+
+    table.removeChild(tbody);
+
+    for (let i = 0; i < rows.length; i++) {
+        tbody.appendChild(rows[i]);
+    }
+    table.appendChild(tbody);
+}
+
+table.addEventListener('click', (e) => {
+    const el = e.target;
+    const index = el.cellIndex;
+    const type = el.getAttribute('data-type');
+
+    if(el.nodeName !== 'TH') return;
+    if(type === 'boolean') return;
+
+
+    sortTable(tbody, index, type, activeColumnIndex === index);
+    activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
+})
