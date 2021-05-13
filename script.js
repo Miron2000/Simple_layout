@@ -156,7 +156,7 @@ const column = [
     {acessor: 'genre', title: 'Genre', data: 'text'},
     {acessor: 'releaseDate', title: 'Release date', data: 'date'},
     {acessor: 'countries', title: 'Countries', data: 'text'},
-    {acessor: 'assessment', title: 'Assessment', data: 'double'},
+    {acessor: 'assessment', title: 'Rating', data: 'double'},
     {acessor: 'imdbFilm', title: 'IMDB', data: 'boolean'}
 ]
 
@@ -223,54 +223,118 @@ createTableRows(tbody);
 
 
 ///////////////////////////ПРОСТАЯ СОРТИРОВКА..........................................
+// let activeColumnIndex = -1;
+// const sortTable = function(tbody, index, type, isSorted) {
+//
+//     const compare = function (rowA, rowB) {
+//         const rowDataA = rowA.cells[index].innerHTML;
+//         const rowDataB = rowB.cells[index].innerHTML;
+//
+//         switch (type) {
+//             case 'integer':
+//             case 'double':
+//                 return rowDataA - rowDataB;
+//
+//             case 'date':
+//                 const dateA = rowDataA.split('.').reverse().join('-');
+//                 const dateB = rowDataB.split('.').reverse().join('-');
+//                 return new Date(dateA).getTime() - new Date(dateB).getTime();
+//
+//             case 'text':
+//                 if (rowDataA < rowDataB) return -1;
+//                 else if (rowDataA > rowDataB) return 1;
+//                 return 0;
+//         }
+//     }
+//
+//     let rows = [].slice.call(tbody.rows);
+//
+//     rows.sort(compare);
+//     if(isSorted) {
+//         rows.reverse();
+//     }
+//
+//     table.removeChild(tbody);
+//
+//     for (let i = 0; i < rows.length; i++) {
+//         tbody.appendChild(rows[i]);
+//     }
+//     table.appendChild(tbody);
+// }
+//
+// table.addEventListener('click', (e) => {
+//     const el = e.target;
+//     const index = el.cellIndex;
+//     const type = el.getAttribute('data-type');
+//
+//     if(el.nodeName !== 'TH') return;
+//     if(type === 'boolean') return;
+//
+//
+//     sortTable(tbody, index, type, activeColumnIndex === index);
+//     activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
+// })
+
+///////////////////////////БЫСТРАЯ СОРТИРОВКА..........................................
 let activeColumnIndex = -1;
-const sortTable = function(tbody, index, type, isSorted) {
+table.addEventListener('click', (event) => {
+    let elTarget = event.target;
+    const index = elTarget.cellIndex;//index елемента(th) на который кликнули
+    const type = elTarget.getAttribute('data-type');
 
-    const compare = function (rowA, rowB) {
-        const rowDataA = rowA.cells[index].innerHTML;
-        const rowDataB = rowB.cells[index].innerHTML;
+    if (elTarget.tagName !== 'TH') return;
+    if (type === 'boolean') return;
 
-        switch (type) {
-            case 'integer':
-            case 'double':
-                return rowDataA - rowDataB;
-
-            case 'date':
-                const dateA = rowDataA.split('.').reverse().join('-');
-                const dateB = rowDataB.split('.').reverse().join('-');
-                return new Date(dateA).getTime() - new Date(dateB).getTime();
-
-            case 'text':
-                if (rowDataA.toLowerCase() < rowDataB.toLowerCase()) return -1;
-                else if (rowDataA.toLowerCase() > rowDataB.toLowerCase()) return 1;
-                return 0;
-        }
-    }
-
-    let rows = [].slice.call(tbody.rows);
-
-    rows.sort(compare);
-    if(isSorted) {
-        rows.reverse();
-    }
-
-    table.removeChild(tbody);
-
-    for (let i = 0; i < rows.length; i++) {
-        tbody.appendChild(rows[i]);
-    }
-    table.appendChild(tbody);
-}
-
-table.addEventListener('click', (e) => {
-    const el = e.target;
-    const index = el.cellIndex;
-    const type = el.getAttribute('data-type');
-
-    if(el.nodeName !== 'TH') return;
-    if(type === 'boolean') return;
-
-
-    sortTable(tbody, index, type, activeColumnIndex === index);
+    sortTable(index, type, activeColumnIndex === index);
     activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
 })
+
+function sortTable(index, type, isSorted) {
+
+    let rowsArr = [].slice.call(tbody.rows);
+
+    const sortArr = quickSort(rowsArr, index);
+
+        if(isSorted) {
+            sortArr.reverse();
+    }
+    table.removeChild(tbody);
+
+    for (let i = 0; i < sortArr.length; i++) {
+        tbody.appendChild(sortArr[i]);
+    }
+
+    table.appendChild(tbody);
+
+
+    function quickSort(rowsArr) {
+
+        function getColumnValue(row, cellIndex) {
+            if(type === 'integer' || type === 'double'){
+                return +row.cells[cellIndex].innerHTML;
+            }
+            else if(type === 'text' ){
+                return row.cells[cellIndex].innerHTML;
+            }
+            else if(type === 'date'){
+                const dateA = row.cells[cellIndex].innerHTML.split('.').reverse().join('-');
+                return new Date(dateA).getTime();
+            }
+            else {
+                throw new Error('invalid type')
+            }
+        }
+
+        if (rowsArr.length <= 1) {
+            return rowsArr;
+        } else {
+            const pivot = rowsArr[Math.floor(Math.random() * rowsArr.length)];//рандомный обьект с фильмом <tr></tr>
+            const pivotValues = getColumnValue(pivot, index);//дает строку или число с обьекта, смотря на то что нажму
+
+            const less = rowsArr.filter(row => getColumnValue(row, index) < pivotValues);//массив с маленькими числами
+            const greater = rowsArr.filter(row => getColumnValue(row, index) > pivotValues);//массив с большими числами
+
+            return [...quickSort(less), pivot, ...quickSort(greater)];
+        }
+    }
+}
