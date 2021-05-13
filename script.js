@@ -234,19 +234,16 @@ const sortTable = function(tbody, index, type, isSorted) {
             case 'integer':
             case 'double':
                 return rowDataA - rowDataB;
-                break;
 
             case 'date':
                 const dateA = rowDataA.split('.').reverse().join('-');
                 const dateB = rowDataB.split('.').reverse().join('-');
                 return new Date(dateA).getTime() - new Date(dateB).getTime();
-                break;
 
             case 'text':
                 if (rowDataA.toLowerCase() < rowDataB.toLowerCase()) return -1;
                 else if (rowDataA.toLowerCase() > rowDataB.toLowerCase()) return 1;
                 return 0;
-                break;
         }
     }
 
