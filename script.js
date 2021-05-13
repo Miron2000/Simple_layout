@@ -166,7 +166,7 @@ function createTableTitles(trHead) {
         const th = document.createElement('th');
         th.innerHTML = item.title;
         trHead.appendChild(th);
-        th.setAttribute('data-type', `${item.data}`);
+        th.setAttribute('data-type', item.data);
     })
 }
 
@@ -222,28 +222,9 @@ createTableTitles(trHead);
 createTableRows(tbody);
 
 
-//При кліку на th міняє колір
-// let selectedTd;
-// clickTable.onclick = function(event){
-//     let target = event.target;
-//     if (target.tagName !== 'TH') return;
-//     highlight(target);
-// }
-// function highlight(th) {
-//     if (selectedTd) { // убрать существующую подсветку, если есть
-//         selectedTd.classList.remove('highlight');
-//     }
-//     selectedTd = th;
-//     selectedTd.classList.add('highlight'); // подсветить новый td
-//
-//     const newArray = films.sort((a, b) => a - b);
-// console.log(newArray, 'Method Sort')
-// }
-
 ///////////////////////////ПРОСТАЯ СОРТИРОВКА..........................................
-let colIndex = -1;
-const sortTable = function(index, type, isSorted) {
-    const tbody = table.querySelector('tbody');
+let activeColumnIndex = -1;
+const sortTable = function(tbody, index, type, isSorted) {
 
     const compare = function (rowA, rowB) {
         const rowDataA = rowA.cells[index].innerHTML;
@@ -253,19 +234,19 @@ const sortTable = function(index, type, isSorted) {
             case 'integer':
             case 'double':
                 return rowDataA - rowDataB;
-                break
+                break;
 
             case 'date':
                 const dateA = rowDataA.split('.').reverse().join('-');
                 const dateB = rowDataB.split('.').reverse().join('-');
                 return new Date(dateA).getTime() - new Date(dateB).getTime();
-                break
+                break;
 
             case 'text':
-                if (rowDataA < rowDataB) return -1;
-                else if (rowDataA > rowDataB) return 1;
+                if (rowDataA.toLowerCase() < rowDataB.toLowerCase()) return -1;
+                else if (rowDataA.toLowerCase() > rowDataB.toLowerCase()) return 1;
                 return 0;
-                break
+                break;
         }
     }
 
@@ -286,60 +267,13 @@ const sortTable = function(index, type, isSorted) {
 
 table.addEventListener('click', (e) => {
     const el = e.target;
-    if(el.nodeName !== 'TH') return;
-
     const index = el.cellIndex;
-
     const type = el.getAttribute('data-type');
-    sortTable(index, type, colIndex === index);
-    colIndex = (colIndex === index) ? -1 : index;
+
+    if(el.nodeName !== 'TH') return;
+    if(type === 'boolean') return;
+
+
+    sortTable(tbody, index, type, activeColumnIndex === index);
+    activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
 })
-
-
-
-///////////////////////////БЫСТРАЯ СОРТИРОВКА..........................................
-// table.addEventListener('click', (event) => {
-//     let elTarget = event.target;
-//     if (elTarget.tagName !== 'TH') return;
-//     const index = elTarget.cellIndex;//index елемента(th) на который кликнули
-//
-//     const type = elTarget.getAttribute('data-type');
-//
-//     sortTable(films, index, type);
-// })
-//
-// function sortTable(arrFilms, index, type) {
-//     // switch (type) {
-//     //     case 'integer':
-//     //         quickSort(arrFilms, index);
-//     //         break;
-//     // }
-//
-//     const sortArrayQuickSearch = quickSort(arrFilms, index);
-//     let rows = [];
-//     table.removeChild(tbody);
-//
-//     for (let i =0; i < sortArrayQuickSearch.length; i++) {
-//         console.log(rows.push(i), 'test');
-//     }
-//
-//     table.appendChild(tbody);
-// }
-//
-// function quickSort(arrFilms, index) {
-//     if (arrFilms.length < 2) {
-//         return arrFilms;
-//     } else {
-//         const pivot = arrFilms[Math.floor(Math.random() * arrFilms.length)];//рандомный обьект с фильмом
-//         const pivotValues = Object.values(pivot)[0];//number обьекта
-//
-//         const less = arrFilms.filter(value => Object.values(value)[0] < pivotValues);//массив с маленькими числами
-//         const greater = arrFilms.filter(value => Object.values(value)[0] > pivotValues);//массив с большими числами
-//
-//         // console.log(pivotValues, 'pivotValues');
-//         // console.log(less, 'less');
-//         // console.log(greater, 'greater');
-//         let sortArray = [...quickSort(less), pivotValues, ...quickSort(greater)];
-//         return sortArray;
-//     }
-// }
