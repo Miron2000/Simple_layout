@@ -2,7 +2,7 @@ const data = [
     {
         number: 3,
         films: 'Babysitting',
-        genre: 'Сomedy',
+        genre: 'Comedy',
         releaseDate: '16.04.2014',
         countries: 'France',
         assessment: 8.7,
@@ -29,7 +29,7 @@ const data = [
     {
         number: 2,
         films: 'The Hangover',
-        genre: 'Сomedy',
+        genre: 'Comedy',
         releaseDate: '30.05.2009',
         countries: 'USA',
         assessment: 9.0,
@@ -56,7 +56,7 @@ const data = [
     {
         number: 9,
         films: 'Dumb and Dumber',
-        genre: 'Сomedy',
+        genre: 'Comedy',
         releaseDate: '16.12.1994',
         countries: 'USA',
         assessment: 5.5,

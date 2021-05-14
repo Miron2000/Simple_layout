@@ -283,7 +283,6 @@ table.addEventListener('click', (event) => {
     const type = elTarget.getAttribute('data-type');
 
     if (elTarget.tagName !== 'TH') return;
-    if (type === 'boolean') return;
 
     sortTable(index, type, activeColumnIndex === index);
     activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
@@ -297,7 +296,7 @@ function sortTable(index, type, isSorted) {
 
         if(isSorted) {
             sortArr.reverse();
-    }
+        }
     table.removeChild(tbody);
 
     for (let i = 0; i < sortArr.length; i++) {
@@ -311,17 +310,17 @@ function sortTable(index, type, isSorted) {
 
         function getColumnValue(row, cellIndex) {
             if(type === 'integer' || type === 'double'){
-                return +row.cells[cellIndex].innerHTML;
+                return +row.cells[cellIndex].innerText;
             }
             else if(type === 'text' ){
-                return row.cells[cellIndex].innerHTML;
+                return row.cells[cellIndex].innerText;
             }
             else if(type === 'date'){
-                const dateA = row.cells[cellIndex].innerHTML.split('.').reverse().join('-');
+                const dateA = row.cells[cellIndex].innerText.split('.').reverse().join('-');
                 return new Date(dateA).getTime();
             }
-            else {
-                throw new Error('invalid type')
+            else{
+                throw new Error('Invalid type')
             }
         }
 
