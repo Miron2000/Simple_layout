@@ -248,6 +248,7 @@ function createTableRows(tbody) {
 
 createTableTitles(trHead);
 createTableRows(tbody);
+const rowsArray = [].slice.call(tbody.rows);
 
 ///////////////////////////QUICK SORT/////////////////////////////////////////
 let activeColumnIndex = -1;
@@ -259,13 +260,12 @@ table.addEventListener("click", (event) => {
 
     if (elTarget.tagName !== "TH") return;
 
-    sortTable(index, type, activeColumnIndex === index);
+    sortTable(rowsArray, index, type, activeColumnIndex === index);
     activeColumnIndex = activeColumnIndex === index ? -1 : index;
 });
 
-function sortTable(index, type, isSorted) {
-    let rowsArr = [].slice.call(tbody.rows);
-    const sortArr = quickSort(rowsArr, index);
+function sortTable(rowsArray, index, type, isSorted) {
+    const sortArr = quickSort(rowsArray, index);
 
     if (isSorted) {
         sortArr.reverse();
@@ -311,55 +311,28 @@ function sortTable(index, type, isSorted) {
     }
 }
 
-//linerSearch 1 варіант/////////////////////////////////////////////////////////
-// document.querySelector('.inputLinerSearch').oninput = function (){
-//     let val = this.value.trim();
-//     let elasticItem = [].slice.call(tbody.rows);
-//     if(val !== ''){
-//         elasticItem.forEach(function(elem){
-//            if(elem.innerText.search(val) === -1){
-//                elem.classList.add('hide');
-//            }else {
-//                elem.classList.remove('hide');
-//            }
-//         });
-//     }
-//     else {
-//         elasticItem.forEach(function(elem){
-//             elem.classList.remove('hide');
-//         })
-//     }
-// }
-
-//linerSearch 2 варіант/////////////////////////////////////////////////////////
+//linerSearch
 document.querySelector('.inputLinerSearch').oninput = function () {
-    let elasticItem = [].slice.call(tbody.rows);
+    let elasticItem = [...rowsArray];
     let val = this.value.trim().toLowerCase();
-    linearSearch(elasticItem, val);
+    const sortArr = filterArr(elasticItem, val);//filtered array
+
+    tbody.innerHTML = '';
+    sortArr.forEach(item => {
+        tbody.appendChild(item);
+    })
 }
 
-function linearSearch(arr, val) {
-    if (val !== '') {
-        for (let i = 0; i < arr.length; i++) {
-            let test = arr[i].innerText.toLowerCase();
-
-            if (test.search(val) === -1) {
-                // arr[i].classList.add('hide');
-                tbody.removeChild(arr[i]);
-            } else {
-                // arr[i].classList.remove('hide');
-                tbody.appendChild(arr[i]);
-                table.appendChild(tbody);
-            }
-        }
+function filterArr(rowsArr, val) {
+    if (val === '') {
+        return rowsArr
     } else {
-        for (let i = 0; i < arr.length; i++) {
-            // arr[i].classList.remove('hide');
-            tbody.appendChild(arr[i]);
-            table.appendChild(tbody);
-        }
+        return rowsArr.filter(item => {
+            let row = item.innerText.toLowerCase();
+            return row.search(val) !== -1;
+        });
     }
-}
+};
 
 
 ///////////////////////////ПРОСТАЯ СОРТИРОВКА/////////////////////////////////////
