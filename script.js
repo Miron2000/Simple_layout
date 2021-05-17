@@ -1,4 +1,5 @@
 import fetchFilms from "./data.js";
+import data from "./data.js";
 
 const sectionTable = document.querySelector(".section-table");
 const table = document.createElement("table");
@@ -247,6 +248,14 @@ function createTableRows(tbody) {
 }
 
 createTableTitles(trHead);
+
+//Sorting by rating and displaying in the table from smallest to largest
+function sortRating(field) {
+    return (a, b) => a[field] > b[field] ? 1 : -1;
+}
+
+films.sort(sortRating('assessment'));
+
 createTableRows(tbody);
 const rowsArray = [].slice.call(tbody.rows);
 
@@ -311,9 +320,9 @@ function sortTable(rowsArray, index, type, isSorted) {
     }
 }
 
-//linerSearch
+//LinerSearch
 document.querySelector('.inputLinerSearch').oninput = function () {
-    let elasticItem = [...rowsArray];
+    const elasticItem = [...rowsArray];
     let val = this.value.trim().toLowerCase();
     const sortArr = filterArr(elasticItem, val);//filtered array
 
@@ -335,55 +344,71 @@ function filterArr(rowsArr, val) {
 };
 
 
-///////////////////////////ПРОСТАЯ СОРТИРОВКА/////////////////////////////////////
-// let activeColumnIndex = -1;
-// const sortTable = function(tbody, index, type, isSorted) {
-//
-//     const compare = function (rowA, rowB) {
-//         const rowDataA = rowA.cells[index].innerHTML;
-//         const rowDataB = rowB.cells[index].innerHTML;
-//
-//         switch (type) {
-//             case 'integer':
-//             case 'double':
-//                 return rowDataA - rowDataB;
-//
-//             case 'date':
-//                 const dateA = rowDataA.split('.').reverse().join('-');
-//                 const dateB = rowDataB.split('.').reverse().join('-');
-//                 return new Date(dateA).getTime() - new Date(dateB).getTime();
-//
-//             case 'text':
-//                 if (rowDataA < rowDataB) return -1;
-//                 else if (rowDataA > rowDataB) return 1;
-//                 return 0;
-//         }
-//     }
-//
-//     let rows = [].slice.call(tbody.rows);
-//
-//     rows.sort(compare);
-//     if(isSorted) {
-//         rows.reverse();
-//     }
-//
-//     table.removeChild(tbody);
-//
-//     for (let i = 0; i < rows.length; i++) {
-//         tbody.appendChild(rows[i]);
-//     }
-//     table.appendChild(tbody);
-// }
-//
-// table.addEventListener('click', (e) => {
-//     const el = e.target;
-//     const index = el.cellIndex;
-//     const type = el.getAttribute('data-type');
-//
-//     if(el.nodeName !== 'TH') return;
-//     if(type === 'boolean') return;
-//
-//
-//     sortTable(tbody, index, type, activeColumnIndex === index);
-//     activeColumnIndex = (activeColumnIndex === index) ? -1 : index;
-// })
+//BinarySearch
+document.querySelector('.inputBinarySearch').oninput = function () {
+    const elasticItem = [...rowsArray];//массив с <tr>
+    let val = this.value.trim();
+
+    tbody.innerHTML = '';
+
+    if (val === '') {
+        elasticItem.forEach(item => {
+            tbody.appendChild(item);
+        })
+        return;
+    }
+
+    const ratingArr = elasticItem.map((item) => +item.cells[5].innerText);//массив с числами рейтинга
+    const indexSearch = binarySearch(ratingArr, val);
+
+    function drawTableBinarySearch(indexSearch) {
+        tbody.innerHTML = '';
+        if (indexSearch === -1) {
+            return;
+        }
+        let outputArray = [indexSearch];
+
+        let i = indexSearch;
+        while (ratingArr.length > i + 1 && ratingArr[i] === ratingArr[i + 1]) {
+            outputArray.push(i + 1);
+            i++;
+        }
+
+        i = indexSearch;
+        while (i - 1 >= 0 && ratingArr[i] === ratingArr[i - 1]) {
+            outputArray.push(i - 1);
+            i--;
+        }
+
+        for (let i = 0; i < outputArray.length; i++) {
+            tbody.appendChild(elasticItem[outputArray[i]]);
+        }
+
+    };
+
+    drawTableBinarySearch(indexSearch);
+}
+
+function binarySearch(array, target) {
+    let left = 0;
+    let right = array.length - 1;
+    let mid;
+
+    if (target === '') {
+        return -1;
+    }
+
+    while (left <= right) {
+        mid = Math.round((right - left) / 2) + left;
+
+        if (+target === array[mid]) {
+            return mid;
+        } else if (+target < array[mid]) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return -1;
+};
